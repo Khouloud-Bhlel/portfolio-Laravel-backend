@@ -17,7 +17,8 @@ class ProjectController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
             'description' => 'required',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|url',  // Changed to match expected URL format
+            'video_url' => 'nullable|url',  // Changed to match expected URL format
             'project_url' => 'nullable|url',
         ]);
 
@@ -25,13 +26,12 @@ class ProjectController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $project = Project::create($request->all());
-        return response()->json($project, 201);
-    }
+        // Prepare data for saving
+        $data = $request->all();
 
-    public function show(Project $project)
-    {
-        return $project;
+        // No need to handle file uploads if you're using URLs directly
+        $project = Project::create($data);
+        return response()->json($project, 201);
     }
 
     public function update(Request $request, Project $project)
@@ -39,7 +39,8 @@ class ProjectController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:255',
             'description' => 'required',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|url',  // Match expected URL format
+            'video_url' => 'nullable|url',  // Match expected URL format
             'project_url' => 'nullable|url',
         ]);
 
@@ -47,13 +48,8 @@ class ProjectController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $project->update($request->all());
+        $data = $request->all();
+        $project->update($data);
         return response()->json($project, 200);
-    }
-
-    public function destroy(Project $project)
-    {
-        $project->delete();
-        return response()->json(null, 204);
     }
 }
